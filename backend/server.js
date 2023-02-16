@@ -1,24 +1,30 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const app = express();
 const { chats } = require("./data/data");
+const connectDB = require("./config/db");
+const colors = require("colors");
+const userRoutes = require("./routes/userRoutes");
+const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 dotenv.config();
+connectDB();
+const app = express();
+
+//since we are taking data from the frontend, we need to tell our server to accept the data
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("API is running successfully");
 });
 
-app.get("/api/chat", (req, res) => {
-  res.send(chats);
-});
+app.use("/api/user", userRoutes);
 
-app.get("/api/chat/:id", (req, res) => {
-  //   console.log(req.params.id);
-  const singleChat = chats.find((c) => c._id === req.params.id);
-  res.send(singleChat);
-});
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, console.log(`Server is started on the port ${PORT}`));
+app.listen(
+  PORT,
+  console.log(`Server is started on the port ${PORT}`.yellow.bold)
+);
