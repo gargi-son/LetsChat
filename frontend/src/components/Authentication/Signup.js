@@ -42,7 +42,7 @@ const Signup = () => {
       pics.type === "image/png" ||
       pics.type === "image/jpg"
     ) {
-      const data = new FormData();
+      const data = new FormData(); //interface to create key value pairs representing form fields and their values
       data.append("file", pics); //add the file to cloudinary which will contain the picture
       data.append("upload_preset", "lets-chat");
       data.append("cloud_name", "gargi-son");
@@ -98,10 +98,11 @@ const Signup = () => {
       });
       return;
     }
+    //make an api request to store this in the database
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          "Content-type": "application/json", //application-json will be the data that we send
         },
       };
       const { data } = await axios.post(
@@ -116,10 +117,10 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
-
+      //taking the data and storing it in the local storage
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      history.pushState("/chats");
+      history.pushState("/chats"); //pushing the user to the chats page, if the user has successfully logged in
     } catch (error) {
       toast({
         title: "An error has occured",
