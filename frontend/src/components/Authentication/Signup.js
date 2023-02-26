@@ -120,7 +120,7 @@ const Signup = () => {
       //taking the data and storing it in the local storage
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      history.pushState("/chats"); //pushing the user to the chats page, if the user has successfully logged in
+      history.push("/chats"); //pushing the user to the chats page, if the user has successfully logged in
     } catch (error) {
       toast({
         title: "An error has occured",
