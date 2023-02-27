@@ -5,8 +5,10 @@ import { ChatState } from "../Context/chatProvider";
 import { AddIcon } from "@chakra-ui/icons";
 import ChatLoading from "./ChatLoading";
 import { getSender } from "../config/ChatLogics";
+import GroupChatModal from "./Miscellaneous/GroupChatModal";
 
-const MyChats = () => {
+//Whenevr the fetch chat changes, its going to fetch all the chats again
+const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState(); //local state
   const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState();
 
@@ -30,7 +32,7 @@ const MyChats = () => {
     //
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-  }, []);
+  }, [fetchAgain]); //whenever fetchAgain state changes, useEffect is triggered and chats are fetched again
 
   return (
     <>
@@ -55,13 +57,15 @@ const MyChats = () => {
           alignItems="center"
         >
           My Chats
-          <Button
-            display="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
-          >
-            New Group Chat
-          </Button>
+          <GroupChatModal>
+            <Button
+              display="flex"
+              fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+              rightIcon={<AddIcon />}
+            >
+              New Group Chat
+            </Button>
+          </GroupChatModal>
         </Box>
         <Box
           d="flex"
