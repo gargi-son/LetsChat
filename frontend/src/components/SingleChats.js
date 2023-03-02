@@ -24,7 +24,8 @@ const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
 
 const SingleChats = ({ fetchAgain, setFetchAgain }) => {
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const { user, selectedChat, setSelectedChat, notification, setNotification } =
+    ChatState();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
@@ -71,7 +72,6 @@ const SingleChats = ({ fetchAgain, setFetchAgain }) => {
           config
         );
 
-        console.log(data);
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
@@ -125,7 +125,6 @@ const SingleChats = ({ fetchAgain, setFetchAgain }) => {
         config
       );
 
-      console.log(data);
       setMessages(data);
       setLoading(false);
       socket.emit("join chat", selectedChat._id); //creating a new room with the id of this chat
@@ -147,6 +146,7 @@ const SingleChats = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare = selectedChat; //to keep the backup of selectedChat state is inside the compare so that we can decide if need to emit the message or
   }, [selectedChat]);
 
+  console.log(notification, "#############");
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (
@@ -154,6 +154,10 @@ const SingleChats = ({ fetchAgain, setFetchAgain }) => {
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
         //give notification
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
